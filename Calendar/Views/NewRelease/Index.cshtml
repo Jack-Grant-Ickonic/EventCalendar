@@ -1,0 +1,294 @@
+﻿@model Calendar.Models.NewRelease
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Up and coming releases</h2>
+<div class="row">
+    <div class="col-md-12">
+        <div id='calendar'></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <button type="button" id="addEventBtn" class="btn btn-success">Add new release</button>
+    </div>
+</div>
+@using (Html.BeginForm("Delete", "NewRelease", FormMethod.Post))
+{
+    <div id="eventDetailsModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><span id="eventTitle"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    <button id="btnEdit" type="button" class="btn btn-outline-primary btn-sm float-right" style="margin-right:5px;">
+                        <span class="fas fa-pen"></span> Edit
+                    </button>
+                    <p id="pDetails" class="modal-text"></p>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" id="btnDelete" value="Delete" class="btn btn-danger">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+                @Html.TextBoxFor(T => T.Id, null, new { id = "eventID", @type = "hidden" })
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("Add", "NewRelease", FormMethod.Post))
+{
+    <div id="addEvent" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add event</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="form-group has-validation">
+                            <label for="eventTitle">Event title</label>
+                            @Html.TextBoxFor(modal => modal.Title, null, new { @class = "form-control", id = "eventTitle", placeholder = "Enter event title",  required = "required"})
+                            @Html.ValidationMessageFor(model => model.Title, "", new { @class= "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDescription">Event description</label>
+                            @Html.TextAreaFor(modal => modal.Description, new { @class = "form-control", id = "eventDescription", placeholder = "Event description", required = "required" })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="startDate">Start date</label>
+                                    <div class="input-group date" id="AddStartDateTimePicker">
+                                        @Html.TextBoxFor(modal => modal.StartDate, null, new { @class = "form-control", @type = "text", id = "startDate", required = "required" })
+                                        <div class="input-group-addon input-group-append">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="endDate">End date</label>
+                                    <div class="input-group date" id="AddEndDateTimePicker">
+                                        @Html.TextBoxFor(modal => modal.EndDate, null, new { @class = "form-control", @type = "text", id = "endDate", required = "required" })
+                                        <div class="input-group-addon input-group-append">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" id="addSubmit" value="Add" class="btn btn-success">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("Edit", "NewRelease", FormMethod.Post))
+{
+    <div id="EditEvent" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit event</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="EditEventTitle">Event title</label>
+                            @Html.TextBoxFor(modal => modal.Title, null, new { @class = "form-control", id = "EditEventTitle", placeholder = "Enter event title", required = "required" })
+                            @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+
+                        </div>
+                        <div class="form-group">
+                            <label for="EditEventDescription">Event description</label>
+                            @Html.TextAreaFor(modal => modal.Description, new { @class = "form-control", id = "EditEventDescription", placeholder = "Event description", required = "required" })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="EditStartDate">Start date</label>
+                                    <div class="input-group date" id="EditStartDateTimePicker">
+                                        @Html.TextBoxFor(modal => modal.StartDate, null, new { @class = "form-control", @type = "text", id = "EditStartDate", required = "required" })
+                                        <div class="input-group-addon input-group-append">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="EditEndDate">End date</label>
+                                    <div class="input-group" id="EditEndDateTimePicker">
+                                        @Html.TextBoxFor(modal => modal.EndDate, null, new { @class = "form-control", @type = "text", id = "EditEndDate", required = "required" })
+                                        <div class="input-group-addon input-group-append">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @Html.TextBoxFor(T => T.Id, null, new { id = "EditEventID", @type = "hidden" })
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Save Changes" class="btn btn-success">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!--Required CSS links-->
+<link href="~/Content/fontawesome-all.css" rel="stylesheet" />
+<link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.0/fullcalendar.min.css" rel="stylesheet" />
+<link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
+@section scripts
+{
+    @*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>*@
+    <script type="text/javascript" src="~/Scripts/moment.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            var calendar = $("#calendar");
+            var selectedEvent = null;
+            var events = [];
+            FetchEventAndRenderCalendar();
+
+            $(function () {
+                $.validator.methods.date = function (value, element) {
+                    return this.optional(element) || moment(value, "DD/MM/YYYY HH:mm A", true).isValid();
+                }
+            });
+
+            //Do not delete icons
+            $("#EditStartDateTimePicker, #EditEndDateTimePicker, #AddEndDateTimePicker, #AddStartDateTimePicker").datetimepicker({
+                format: "DD/MM/YYYY HH:mm A",
+                icons:
+                {
+                    up: 'fa fa-angle-up',
+                    down: 'fa fa-angle-down',
+                    time: 'far fa-clock',
+                    date: 'far fa-calendar-alt',
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right'
+                },
+            });
+
+            $("#btnEdit").on("click", function () {
+                if (selectedEvent != null) {
+                    $("#EditEventID").val(selectedEvent.eventID);
+                    $("#EditEventTitle").val(selectedEvent.title);
+                    $("#EditEventDescription").val(selectedEvent.description);
+                    $("#EditStartDate").val(selectedEvent.start.format('DD/MM/YYYY HH:mm A'));
+                    $("#EditEndDate").val(selectedEvent.end != null ? selectedEvent.end.format('DD/MM/YYYY HH:mm A') : "");
+                }
+
+                $("#eventDetailsModal").modal("hide");
+                $("#EditEvent").modal();
+            });
+
+            $("#addEventBtn").on("click", function () {
+                $("#addEvent").modal();
+            })
+
+            function FetchEventAndRenderCalendar() {
+                $.ajax({
+                    type: "GET",
+                    url: "/NewRelease/GetEvents",
+                    success: function (data) {
+                        $.each(data, function (i, v) {
+                            events.push({
+                                eventID: v.Id,
+                                title: v.Title,
+                                description: v.Description,
+                                start: moment(v.StartDate),
+                                end: moment(v.EndDate),
+                                className: "event"
+                            });
+                        })
+                        GenerateCalendar(events);
+                    },
+                    error: function (error) {
+                        alert("Calendar failed to load. Please try again later.");
+                    }
+                })
+            }
+
+            function GenerateCalendar(events) {
+                calendar.fullCalendar("destory");
+                calendar.fullCalendar({
+                    themeSystem: 'bootstrap',
+                    contentHeight: 600,
+                    defaultDate: new Date(),
+                    timeFormat: "h:(mm)a",
+                    allDaySlot: false,
+                    header: {
+                        right: "today, prev,next",
+                        center: "title",
+                        left: "month,agendaWeek,listDay,listMonth,listYear"
+                    },
+                    buttonText: {
+                        listDay: "daily list",
+                        listMonth: "monthly list",
+                        listYear: "yearly list"
+                    },
+                    dayOfMonthFormat: 'DD/MM',
+                    listDayFormat: 'D MMMM YYYY',
+                    eventLimit: true,
+                    eventColor: "#bb38b6",
+                    events: events,
+                    eventClick: function (calEvent, jsEvent, view) {
+                        selectedEvent = calEvent;
+                        $("#eventDetailsModal #eventTitle").text(calEvent.title);
+                        var description = $("<div/>");
+                        description.append($("<p/>").html("<b>Start: </b>" + calEvent.start.format("DD MMM YYYY HH:mm a")));
+                        if (calEvent.end != null) {
+                            description.append($("<p/>").html("<b>End: </b>" + calEvent.end.format("DD MMM YYYY HH:mm a")));
+                        }
+
+                        description.append($("<p>").html("<b>Description: </b>" + calEvent.description));
+                        $("#eventDetailsModal #pDetails").empty().html(description);
+                        $("#eventID").val(calEvent.eventID);
+
+                        $("#eventDetailsModal").modal();
+                    }
+                })
+            }
+
+        });
+    </script>
+}

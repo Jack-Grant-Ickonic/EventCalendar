@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Up and coming releases!</h2>
+        <p>Check out our up and coming releases.</p>
+        <p>@Html.ActionLink("New Releases", "Index", new {controller =  "NewRelease"}, new {@class = "btn btn-primary" })</p>
+    </div>
+</div>
