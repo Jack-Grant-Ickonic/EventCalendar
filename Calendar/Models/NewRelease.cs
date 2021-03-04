@@ -10,7 +10,7 @@ namespace Calendar.Models
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="Please enter a title.")]
+        [Required(ErrorMessage = "Please enter a title.")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Please enter a description.")]

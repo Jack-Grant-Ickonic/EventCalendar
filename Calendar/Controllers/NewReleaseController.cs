@@ -19,7 +19,6 @@ namespace Calendar.Controllers
 
         public ActionResult Index()
         {
-
             return View("Index");
         }
 
